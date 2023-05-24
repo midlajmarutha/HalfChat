@@ -1,0 +1,11 @@
+input:focus{
+    outline: none;
+    box-shadow: none;
+    border: none;
+}
+.search_input{
+    color: rgb(182, 186, 214);
+}
+.contacts_container::-webkit-scrollbar{
+    display: none;
+}
