@@ -15,7 +15,7 @@ function Contacts({selectedUser,setSelectedUser}) {
                 <div className='' >
                     {contacts.map((el)=>
                         <div onClick={()=>{setSelectedUser(el)}} className='mt-1'>
-                        <div className={'flex text-gray-300 p-2 flex-grow rounded-md hover:bg-gray-800 transition-all cursor-pointer'+(!!selectedUser && el._id===selectedUser._id? ' bg-gray-950 border-l-4 border-blue-700' :'')}>
+                        <div className={'flex text-gray-300 p-2 flex-grow rounded-md hover:bg-gray-800 transition-all cursor-pointer'+(!!selectedUser && el._id===selectedUser._id? ' bg-gray-950 border-blue-700 border-l-4' :'')}>
                             <Avatar userId={el._id}/>
                             <div className="flex mx-2">
                                 <h2 className='first-letter:uppercase font-josefin '>{el.Username}</h2>

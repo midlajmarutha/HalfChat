@@ -3,7 +3,6 @@ import { UserContext } from './UserContext'
 import Login from './Login'
 import axios from 'axios'
 import '../src/App.css'
-import Avatar from './Avatar'
 import Contacts from './Contacts'
 
 
@@ -49,6 +48,7 @@ function Chat() {
     ev.preventDefault();
     ws.send(JSON.stringify({
       messageData:{
+        sender: loggeduserid,
         recipient: selectedUser._id,
         message: newMessage
       }
@@ -61,7 +61,7 @@ function Chat() {
       {loggedusername ?
         <>
           <div className='flex h-screen'>
-            <div className='w-1/3 h-full bg-gray-900 p-4 max-md:w-full'>
+            <div className={'w-1/3 h-full bg-gray-900 p-4 '+(!selectedUser? 'max-md:w-full' : 'max-md:hidden')}>
               <h1 className='text-gray-100 font-bold text-'>HalfChat</h1>
               <div className='mt-2 flex'>
                 <form action="" onSubmit={getUser} onReset={resetSearch} className='flex w-full'>
@@ -98,7 +98,7 @@ function Chat() {
                 <Contacts selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
               </div>
             </div>
-            <div className='w-2/3 h-full bg-gray-800 p-4 flex flex-col max-md:hidden '>
+            <div className={'w-2/3 h-full bg-gray-800 p-4 flex flex-col transition-all '+(selectedUser? 'max-md:w-full' : 'max-md:hidden')}>
               {!selectedUser && (
                 <div className="flex h-full flex-grow items-center justify-center text-gray-200">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-blue-600">
@@ -111,14 +111,14 @@ function Chat() {
                 <div className="flex h-full flex-col">
                   <div className='flex justify-between'>
                     <div className='flex'>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-blue-600" onClick={() => setSelectedUser(null)}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-blue-600" onClick={() => {setSelectedUser(null); setNewMessage(null)}}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                       </svg>
 
                       <h1 className='text-gray-300 first-letter:uppercase font-bold'>{selectedUser.Username}</h1>
                     </div>
                     {/* logged User */}
-                    <div className='bg-blue-600  text-white rounded-full p-1 '>
+                    <div className='bg-blue-600 text-white rounded-full p-1 '>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                       </svg>
@@ -134,7 +134,8 @@ function Chat() {
                     <form action="" className='flex gap-2' onSubmit={sendMessage}>
                       <input type="text" name='Message' placeholder='Type your message here..' className='flex-grow h-10 p-3 rounded bg-gray-900 text-gray-400' 
                         value={newMessage}
-                        onChange={ev=>setNewMessage(ev.target.value)} />
+                        onChange={ev=>setNewMessage(ev.target.value)} 
+                        id='message_input'/>
                       <button className='bg-blue-500 px-3 text-white rounded-md'>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />

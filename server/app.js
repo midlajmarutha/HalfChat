@@ -6,7 +6,7 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const ws =  require('ws')
-const userModel = require('./Schema/userSchema')
+
 
 
 
@@ -139,7 +139,7 @@ wss.on('connection',(connection,req)=>{
         }
     }
     connection.on('message',(message)=>{
-        console.log(message.toString())
+        console.log(JSON.parse(message.toString()))
     });
     [...wss.clients].forEach((client)=>{
         client.send(JSON.stringify({

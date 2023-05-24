@@ -1,5 +1,6 @@
 const { reject } = require('bcrypt/promises')
 const userModel = require('../Schema/userSchema')
+const messageModel = require('../Schema/messagesSchema')
 const bcrypt = require('bcrypt')
 const objectId=require('mongoose').Types.ObjectId
 module.exports={
@@ -98,6 +99,11 @@ module.exports={
             ])
             console.log(UserData)
             resolve(UserData)
+        })
+    },
+    sendMessage:(data)=>{
+        return new Promise((resolve,reject)=>{
+            messageModel.create(data)
         })
     }
 
