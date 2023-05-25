@@ -15,6 +15,7 @@ function Chat() {
   const [selectedUser, setSelectedUser] = useState(null)
   const [newMessage, setNewMessage] = useState(null)
   const [newContacts,setNewContacts] = useState([])
+  const [onlinePeople,setOnlinePeople] = useState({})
   useEffect(() => {
     console.log(loggeduserid)
     const websocket = new WebSocket("ws://localhost:3000");
@@ -22,7 +23,8 @@ function Chat() {
     websocket.addEventListener('message', handleMessage)
   }, [])
   function handleMessage(ev) {
-
+    console.log(JSON.parse(ev.data))
+    setOnlinePeople=JSON.parse(ev.data);
   }
   function getUser(e) {
     e.preventDefault()
@@ -98,7 +100,7 @@ function Chat() {
                 : null
               }
               <div className='mt-2'>
-                <Contacts selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+                <Contacts selectedUser={selectedUser} setSelectedUser={setSelectedUser} online={onlinePeople}/>
               </div>
             </div>
             <div className={'w-2/3 h-full bg-gray-800 p-4 flex flex-col transition-all '+(selectedUser? 'max-md:w-full' : 'max-md:hidden')}>

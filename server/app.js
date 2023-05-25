@@ -143,9 +143,12 @@ wss.on('connection',(connection,req)=>{
         const {sender,recipient,message} = JSON.parse(messageData.toString());
         [...wss.clients].filter(c => c.Id===recipient).forEach(c => c.send(JSON.stringify({sender,recipient})))
     });
+    const onlinepeople=[];
     [...wss.clients].forEach((client)=>{
+        onlinepeople.push({id:client.Id,username:client.Username})
+        // console.log('onlinePeople:',onlinepeople)
         client.send(JSON.stringify({
-            online:[...wss.clients].map(c=>({Username:c.Username,id:c.Id}))
+            online:onlinepeople
         }))
     })
 })
