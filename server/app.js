@@ -138,8 +138,10 @@ wss.on('connection',(connection,req)=>{
             }
         }
     }
-    connection.on('message',(message)=>{
-        console.log(JSON.parse(message.toString()))
+    connection.on('message',(messageData)=>{
+        console.log(JSON.parse(messageData.toString()));
+        const {sender,recipient,message} = JSON.parse(messageData.toString());
+        [...wss.clients].filter(c => c.Id===recipient).forEach(c => c.send(JSON.stringify({sender,recipient})))
     });
     [...wss.clients].forEach((client)=>{
         client.send(JSON.stringify({

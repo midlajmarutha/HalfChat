@@ -14,6 +14,7 @@ function Chat() {
   const [searchOrCancel, setSearchOrCancel] = useState(true)
   const [selectedUser, setSelectedUser] = useState(null)
   const [newMessage, setNewMessage] = useState(null)
+  const [newContacts,setNewContacts] = useState([])
   useEffect(() => {
     console.log(loggeduserid)
     const websocket = new WebSocket("ws://localhost:3000");
@@ -42,7 +43,9 @@ function Chat() {
 
   }
   function handleFollow() {
-    axios.get('/follow', { params: { id: foundUser._id } })
+    axios.get('/follow', { params: { id: foundUser._id } }).then((res)=>{
+      setNewContacts(prev=>[...prev,res])
+    })
   }
   function sendMessage(ev){
     ev.preventDefault();

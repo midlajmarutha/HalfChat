@@ -61,7 +61,17 @@ module.exports={
             let dup = user.Chatlist.find(e=>e===f_id)
             if(!dup){
                 
-                userModel.updateOne({_id:userId},{$push:{Chatlist:new objectId(f_id)}}).then((res)=>{
+                userModel.bulkWrite([{updateOne:{
+                    filter:{_id:userId},
+                    update:{$push:{Chatlist: new objectId(f_id)}}
+                }},
+                {
+                    updateOne:{
+                        filter:{_id:f_id},
+                        update:{$push:{Chatlist: new objectId(userId)}}
+                    }
+                }
+                ]).then((res)=>{
                     resolve()
                 })
             }

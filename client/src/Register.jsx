@@ -19,10 +19,10 @@ export default function Register(){
     return(
         <div className="bg-gray-900 h-screen flex items-center">
             <form className="w-64 mx-auto mb-8" onSubmit={register}>
-                <input value={Email} onChange={e => {setEmail(e.target.value)}} type="email" placeholder="Email" className="block w-full rounded-md mb-2 p-2 border bg-gray-950 text-gray-4000"/>
-                <input value={Username} onChange={e => {setUsername(e.target.value)}} type="text" placeholder="Username" className="block w-full rounded-md mb-2 p-2 border bg-gray-950 text-gray-4000"/>
-                <input value={Password} onChange={e => {setPassword(e.target.value)}} type="password" placeholder="Password" className="block w-full rounded-md mb-2 p-2 border bg-gray-950 text-gray-4000"/>
-                <button type="submit" className="bg-blue-8  00 p-2 w-full text-gray-400">Register</button>
+                <input value={Email} onChange={e => {setEmail(e.target.value)}} type="email" placeholder="Email" className="block w-full rounded-md mb-2 p-2  bg-gray-950 text-gray-400"/>
+                <input value={Username} onChange={e => {setUsername(e.target.value)}} type="text" placeholder="Username" className="block w-full rounded-md mb-2 p-2  bg-gray-950 text-gray-400"/>
+                <input value={Password} onChange={e => {setPassword(e.target.value)}} type="password" placeholder="Password" className="block w-full rounded-md mb-2 p-2  bg-gray-950 text-gray-400"/>
+                <button type="submit" className="bg-blue-800 p-2 w-full text-gray-200">Register</button>
                 <Link to={'/login'}>Already have an account?</Link>
             </form>
         </div>
