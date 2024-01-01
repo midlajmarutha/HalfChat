@@ -14,7 +14,6 @@ const app = express()
 
 function verifyLogin(req,res,next){
     let {token}=req.cookies
-    console.log('token:'+token)
     if(token){
         jwt.verify(token,process.env.JWT_SECRET_KEY,{},(err,userData)=>{
             if(userData.Id){
@@ -89,7 +88,6 @@ app.get('/profile',verifyLogin,(req,res)=>{
 })
 app.get('/chatlist',verifyLogin,(req,res)=>{
     userHelpers.getUserData(req.user.Id).then((response)=>{
-        console.log(response);
         res.status(200).json(response)
     })
 })
@@ -139,11 +137,9 @@ wss.on('connection',(connection,req)=>{
             if(token){
                 jwt.verify(token,process.env.JWT_SECRET_KEY,{},(err,userData)=>{
                     if(err) throw err
-                    console.log(userData)
                     const {User,Id}=userData;
                     connection.Username=User;
                     connection.Id=Id
-                    
                 })
             }
         }
@@ -158,12 +154,10 @@ wss.on('connection',(connection,req)=>{
             })
         }
     });
-    const onlinepeople = {};
+    
+    let online = {};
     [...wss.clients].forEach((client)=>{
-         onlinepeople[client.Id]=client.Username
-        // console.log('onlinePeople:',onlinepeople)
-        client.send(JSON.stringify({
-            online:onlinepeople
-        }))
+        [...wss.clients].map(c => (online[c.Id] = c.Username))
+        client.send(JSON.stringify({online:online}))
     })
 })

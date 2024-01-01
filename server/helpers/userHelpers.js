@@ -107,7 +107,6 @@ module.exports={
                     }
                 }
             ])
-            console.log(UserData)
             resolve(UserData)
         })
     },
