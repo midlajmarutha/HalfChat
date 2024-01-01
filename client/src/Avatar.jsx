@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Avatar({userId}) {
+function Avatar({userId,userName}) {
   let colors=['bg-red-800','bg-teal-800','bg-green-800','bg-purple-900','bg-cyan-800']
   let userIdBase10=parseInt(userId,16)
   let colorIndex=userIdBase10 % colors.length

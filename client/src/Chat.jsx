@@ -19,26 +19,22 @@ function Chat() {
   const [newContacts,setNewContacts] = useState([])
   const [onlinePeople,setOnlinePeople] = useState([])
   useEffect(() => {
-    console.log(loggeduserid)
     const websocket = new WebSocket("ws://localhost:3000");
     setWs(websocket)
     websocket.addEventListener('message', handleMessage)
   }, [])
   function handleMessage(ev) {
-    console.log(JSON.parse(ev.data))
     const messageData=JSON.parse(ev.data)
     if ('online' in messageData){
       setOnlinePeople(messageData.online); 
-      console.log(onlinePeople)
+      
     }else if ('Message' in messageData){
       console.log([{messageData}])
     }
     else if('messagedata' in messageData){
-      console.log(messageData)
+      
     }
-    else{
-      console.log(messageData)
-    }
+    
   }
   function getUser(e) {
     e.preventDefault()
@@ -49,7 +45,7 @@ function Chat() {
         setFoundUser(null)
       }
       setSearchOrCancel(false)
-      console.log(foundUser)
+      
     })
   }
   function resetSearch(e) {
