@@ -14,15 +14,19 @@ const app = express()
 
 function verifyLogin(req,res,next){
     let {token}=req.cookies
-    console.log(token)
+    console.log('token:'+token)
     if(token){
         jwt.verify(token,process.env.JWT_SECRET_KEY,{},(err,userData)=>{
-            console.log(userData)
             if(userData.Id){
                 req.user=userData
+                req.user.logstatus = true;
                 next()
             }
         })
+    }
+    else{
+        req.user = {logstatus:false};
+        next();
     }
 }
 
@@ -44,26 +48,22 @@ app.use(function(req, res, next) {
 
 app.post('/login',(req,res)=>{
     console.log(req.body)
-    
-    
-        userHelpers.doLogin(req.body).then((response)=>{
-            if(response){
-                jwt.sign({User:response.Username,Id:response._id},process.env.JWT_SECRET_KEY,{},(err,token)=>{
-                    res.cookie('token',token,{sameSite:'none',secure:true,httpOnly:false,maxAge:3600000}).status(201).json(
-                        {
-                            Username:response.Username,
-                            Id:response._id
-                            
-                        }
-                    )
-                })
-            }else{
-                res.status(404).json('user not found')
-            }
-        })
-    
-    
-})
+    userHelpers.doLogin(req.body).then((response)=>{
+        if(response){
+            jwt.sign({User:response.Username,Id:response._id},process.env.JWT_SECRET_KEY,{},(err,token)=>{
+                res.cookie('token',token,{sameSite:'none',secure:true,httpOnly:false,maxAge:3600000}).status(201).json(
+                    {
+                        Username:response.Username,
+                        Id:response._id
+                        
+                    }
+                )
+            })
+        }else{
+            res.status(404).json('user not found')
+        }
+    }
+)})
 app.post('/register',async (req,res)=>{
     console.log(req.body)
     // console.log(req.cookies)
@@ -111,7 +111,17 @@ app.get('/follow',verifyLogin, async(req,res)=>{
     })
     
 })
-
+app.get('/fetchMessages',verifyLogin,(req,res)=>{
+    console.log(req.query.loggedUserId,req.query.selectedUserId);
+    userHelpers.fetchMessages(req.query.loggedUserId,req.query.selectedUserId).then((response)=>{
+        if (response){
+            
+            res.status(200).json('ok')
+        }
+        
+    });
+    
+})
 
 const server=app.listen(process.env.PORT,()=>{
     console.log('server started on port :'+process.env.PORT)
@@ -139,13 +149,18 @@ wss.on('connection',(connection,req)=>{
         }
     }
     connection.on('message',(messageData)=>{
-        console.log(JSON.parse(messageData.toString()));
-        const {sender,recipient,message} = JSON.parse(messageData.toString());
-        [...wss.clients].filter(c => c.Id===recipient).forEach(c => c.send(JSON.stringify({sender,recipient})))
+        messageData=JSON.parse(messageData.toString())
+        const {Sender,Recipient,Message} = messageData;
+        console.log(messageData)
+        if(Recipient && Message){
+            userHelpers.sendMessage(messageData).then((res)=>{
+                [...wss.clients].filter(c => c.Id===Recipient).forEach(c => c.send(JSON.stringify({Message,Sender,Id:res._id})))
+            })
+        }
     });
-    const onlinepeople=[];
+    const onlinepeople = {};
     [...wss.clients].forEach((client)=>{
-        onlinepeople.push({id:client.Id,username:client.Username})
+         onlinepeople[client.Id]=client.Username
         // console.log('onlinePeople:',onlinepeople)
         client.send(JSON.stringify({
             online:onlinepeople

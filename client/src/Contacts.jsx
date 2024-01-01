@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react'
 import axios from 'axios'
 import Avatar from './Avatar'
 
-function Contacts({selectedUser,setSelectedUser,online}) {
+function Contacts({selectedUser,setSelectedUser,online,fetchMessages}) {
     const [contacts,setContacts]=useState(null)
     useEffect(()=>{
         axios.get('/chatlist').then((res)=>{
@@ -15,10 +15,9 @@ function Contacts({selectedUser,setSelectedUser,online}) {
                 <div className='' >
                     {contacts.map((el)=>{
                         return(
-                        <div onClick={()=>{setSelectedUser(el)}} className='mt-1'>
+                        <div onClick={()=>{setSelectedUser(el);fetchMessages(el._id)}} className='mt-1'>
                         <div className={'flex text-gray-300 p-2 flex-grow rounded-md hover:bg-gray-800 transition-all cursor-pointer'+(!!selectedUser && el._id===selectedUser._id? ' bg-gray-950 border-blue-700 border-l-4' :'')}>
                             <Avatar userId={el._id}/>
-                            
                             <div className="flex mx-2">
                                 <h2 className='first-letter:uppercase font-josefin '>{el.Username}</h2>
                             </div>

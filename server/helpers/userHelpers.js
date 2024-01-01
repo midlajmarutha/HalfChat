@@ -113,8 +113,17 @@ module.exports={
     },
     sendMessage:(data)=>{
         return new Promise((resolve,reject)=>{
-            messageModel.create(data)
+            messageModel.create(data).then((res)=>{
+                resolve(res)
+            })
+        })
+    },
+    fetchMessages:(userid,selectedUser)=>{
+        console.log(userid)
+        return new Promise(async(resolve,reject)=>{
+           const messages= await messageModel.find({Sender:userid})
+           console.log(messages);
+           resolve('hello') 
         })
     }
-
 }
