@@ -111,6 +111,7 @@ module.exports={
         })
     },
     sendMessage:(data)=>{
+        // store messages into database
         return new Promise((resolve,reject)=>{
             messageModel.create(data).then((res)=>{
                 resolve(res)
@@ -120,7 +121,7 @@ module.exports={
     fetchMessages:(userid,selectedUser)=>{
         console.log(userid)
         return new Promise(async(resolve,reject)=>{
-           const messages= await messageModel.find({Sender:userid})
+           const messages= await messageModel.find({Sender:{$in:[userid,selectedUser]},Recipient:{$in:[userid,selectedUser]}})
            console.log(messages);
            resolve('hello') 
         })

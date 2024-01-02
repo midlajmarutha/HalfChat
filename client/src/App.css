@@ -9,3 +9,7 @@ input:focus{
 .contacts_container::-webkit-scrollbar{
     display: none;
 }
+
+*::-webkit-scrollbar{
+    display: none;
+}

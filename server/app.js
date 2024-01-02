@@ -150,7 +150,7 @@ wss.on('connection',(connection,req)=>{
         console.log(messageData)
         if(Recipient && Message){
             userHelpers.sendMessage(messageData).then((res)=>{
-                [...wss.clients].filter(c => c.Id===Recipient).forEach(c => c.send(JSON.stringify({Message,Sender,Id:res._id})))
+                [...wss.clients].filter(c => c.Id===Recipient).forEach(c => c.send(JSON.stringify({Message,Sender,Id:res._id,incoming:true})))
             })
         }
     });

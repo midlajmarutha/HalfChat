@@ -16,6 +16,8 @@ function Chat() {
   const [searchOrCancel, setSearchOrCancel] = useState(true)
   const [selectedUser, setSelectedUser] = useState(null)
   const [newMessage, setNewMessage] = useState(null)
+  
+  const [messages,setMessages] = useState([])
   const [newContacts,setNewContacts] = useState([])
   const [onlinePeople,setOnlinePeople] = useState([])
   useEffect(() => {
@@ -29,7 +31,10 @@ function Chat() {
       setOnlinePeople(messageData.online); 
       
     }else if ('Message' in messageData){
+      let messageContainer = document.getElementById("messages");
       console.log([{messageData}])
+      setMessages((prev)=>([...prev,messageData]));
+      messageContainer.scrollBy(0,100)
     }
     else if('messagedata' in messageData){
       
@@ -54,6 +59,15 @@ function Chat() {
     setSearchOrCancel(true)
 
   }
+  function showmessages(){
+    messages.forEach((message)=>{
+      return(
+        <div>
+          {message.Message}
+        </div>
+      )
+    })
+  }
   function handleFollow() {
     axios.get('/follow', { params: { id: foundUser._id } }).then((res)=>{
       setNewContacts(prev=>[...prev,res])
@@ -61,14 +75,14 @@ function Chat() {
   }
   function sendMessage(ev){
     ev.preventDefault();
-    ev.target.value = ''
+    setMessages(prev=>[...prev,{Recipient: selectedUser._id,Message: newMessage,incoming:false}])
     ws.send(JSON.stringify({
         Sender: loggeduserid,
         Recipient: selectedUser._id,
         Message: newMessage
       }
     ))
-    ev.target[0].value=null
+    setNewMessage('')
   }
   function fetchMessages(userid){
     axios.get('/fetchMessages',{params:{loggedUserId:loggeduserid, selectedUserId :userid}})
@@ -133,6 +147,7 @@ function Chat() {
               </div>
             )}
             {!!selectedUser && (
+              
               <div className="flex h-full flex-col">
                 <div className='flex justify-between'>
                   <div className='flex'>
@@ -149,14 +164,18 @@ function Chat() {
                     </svg>
                   </div>
                 </div>
-                <div className='flex-grow flex-col justify-center items-center text-gray-500  '>
-                  <div className='flex flex-col justify-center items-center text-gray-500  cursor-pointer'>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-                    </svg>
-                    <h1>Say <span className='font-poppins text-gray-200 '>Hello</span> To <span className='font-poppins text-gray-200'>{selectedUser.Username}</span> </h1>
-                  </div>
-                </div>
+                <div className='flex flex-grow flex-col overflow-y-scroll text-gray-500  ' id='messages'>
+                {messages ? 
+                messages.map((message)=>(<div className={"p-2 text-sm"+(message.incoming ? ' bg-blue-700 text-white  rounded-md my-3 w-fit max-w-[40%]' : ' bg-blue-400 text-white rounded-md my-3 w-fit max-w-[40%] self-end')}>{message.Message}</div>))
+                :
+                <div className='flex flex-col justify-center items-center text-gray-500  cursor-pointer'>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                  </svg>
+                  <h1>Say <span className='font-poppins text-gray-200 '>Hello</span> To <span className='font-poppins text-gray-200'>{selectedUser.Username}</span> </h1>
+                </div>}
+              </div>
+                
                 <div >
                   <form action="" className='flex gap-2' onSubmit={sendMessage}>
                     <input type="text" name='Message' placeholder='Type your message here..' className='flex-grow h-10 p-3 rounded bg-gray-900 text-gray-400' 
