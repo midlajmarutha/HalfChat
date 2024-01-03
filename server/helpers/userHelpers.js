@@ -121,9 +121,9 @@ module.exports={
     fetchMessages:(userid,selectedUser)=>{
         console.log(userid)
         return new Promise(async(resolve,reject)=>{
-           const messages= await messageModel.find({Sender:{$in:[userid,selectedUser]},Recipient:{$in:[userid,selectedUser]}})
+           const messages= await messageModel.find({Sender:{$in:[userid,selectedUser]},Recipient:{$in:[userid,selectedUser]}}).sort('createdAt')
            console.log(messages);
-           resolve('hello') 
+           resolve(messages);
         })
     }
 }

@@ -113,8 +113,7 @@ app.get('/fetchMessages',verifyLogin,(req,res)=>{
     console.log(req.query.loggedUserId,req.query.selectedUserId);
     userHelpers.fetchMessages(req.query.loggedUserId,req.query.selectedUserId).then((response)=>{
         if (response){
-            
-            res.status(200).json('ok')
+            res.status(200).json(response);
         }
         
     });

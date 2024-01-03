@@ -6,7 +6,7 @@ input:focus{
 .search_input{
     color: rgb(182, 186, 214);
 }
-.contacts_container::-webkit-scrollbar{
+.contacts_container::-webkit-scrollbar-track{
     display: none;
 }
 
