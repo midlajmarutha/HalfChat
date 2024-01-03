@@ -175,7 +175,7 @@ function Chat() {
                 <div className='flex flex-grow flex-col overflow-y-scroll text-gray-500  ' id='messages'>
                   {messages ?
                     messages.map((message) =>
-                    (<div className={"p-2 text-sm" + (message.incoming ? ' bg-blue-700 text-white  rounded-md my-3 w-fit max-w-[40%]' : ' bg-blue-400 text-white rounded-md my-3 w-fit max-w-[40%] self-end')}>
+                    (<div className={"p-2 text-sm" + (message.incoming || message.Sender == selectedUser._id ? ' bg-blue-700 text-white  rounded-md my-3 w-fit max-w-[40%]' : ' bg-blue-400 text-white rounded-md my-3 w-fit max-w-[40%] self-end')}>
                       {message.Message}
                     </div>
                     ))
