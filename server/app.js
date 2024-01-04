@@ -44,8 +44,9 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Credentials", true);
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
-  });
+});
 
+app.use('/uploads',express.static(__dirname+"/storage/uploads"))
 app.post('/login',(req,res)=>{
     console.log(req.body)
     userHelpers.doLogin(req.body).then((response)=>{
@@ -116,9 +117,7 @@ app.get('/fetchMessages',verifyLogin,(req,res)=>{
         if (response){
             res.status(200).json(response);
         }
-        
-    });
-    
+    });  
 })
 
 const server=app.listen(process.env.PORT,()=>{
@@ -154,7 +153,7 @@ wss.on('connection',(connection,req)=>{
             let ext = name[name.length - 1]
             console.log(ext)
             let file = new Buffer(File.file,'base64')
-            let filePath = __dirname + "/storage/uploads" + Sender + Date.now() + "." +ext;
+            let filePath = __dirname + "/storage/uploads/" + Sender + Date.now() + "." +ext;
             fs.writeFile(filePath, file, ()=>{
                 console.log("file saved")
             })
