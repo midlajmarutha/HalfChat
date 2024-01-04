@@ -178,8 +178,9 @@ function Chat() {
                 <div className='flex flex-grow flex-col overflow-y-scroll text-gray-500  ' id='messages'>
                   {messages.length !== 0 ?
                     messages.map((message) =>
-                    (<div className={"p-2 text-sm" + (message.incoming || message.Sender == selectedUser._id ? ' bg-blue-700 text-white  rounded-md my-3 w-fit max-w-[40%]' : ' bg-blue-400 text-white rounded-md my-3 w-fit max-w-[40%] self-end')}>
-                      {message.Message}
+                    (<div className={"p-2 text-sm break-words w-fit max-w-[40%]" + (message.incoming || message.Sender == selectedUser._id ? ' bg-blue-700 text-white  rounded-md my-3' : ' bg-blue-400 text-white rounded-md my-3  self-end')}>
+                      <p>{message.Message}</p>
+                      
                     </div>
                     ))
                     :
