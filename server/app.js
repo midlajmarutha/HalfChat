@@ -6,6 +6,7 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const ws =  require('ws')
+const fs = require('fs')
 
 
 
@@ -145,8 +146,20 @@ wss.on('connection',(connection,req)=>{
     }
     connection.on('message',(messageData)=>{
         messageData=JSON.parse(messageData.toString())
-        const {Sender,Recipient,Message} = messageData;
+        const {Sender,Recipient,Message,File} = messageData;
         console.log(messageData)
+        if(File){
+            File.file = File.file.split(",")[1]
+            let name = File.name.split('.')
+            let ext = name[name.length - 1]
+            console.log(ext)
+            let file = new Buffer(File.file,'base64')
+            let filePath = __dirname + "/storage/uploads" + Sender + Date.now() + "." +ext;
+            fs.writeFile(filePath, file, ()=>{
+                console.log("file saved")
+            })
+            messageData.File = filePath;
+        }
         if(Recipient && Message){
             userHelpers.sendMessage(messageData).then((res)=>{
                 [...wss.clients].filter(c => c.Id===Recipient).forEach(c => c.send(JSON.stringify({Message,Sender,Id:res._id,incoming:true})))

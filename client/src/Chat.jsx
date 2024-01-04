@@ -16,6 +16,7 @@ function Chat() {
   const [searchOrCancel, setSearchOrCancel] = useState(true)
   const [selectedUser, setSelectedUser] = useState(null)
   const [newMessage, setNewMessage] = useState('')
+  const [lastMessageDate, setLastMessageDate] = useState()
 
   const [messages, setMessages] = useState([])
   const [newContacts, setNewContacts] = useState([])
@@ -73,32 +74,44 @@ function Chat() {
       setNewContacts(prev => [...prev, res])
     })
   }
-  function sendMessage(ev,message) {
-    ev.preventDefault();
-    setMessages(prev => [...prev, { Recipient: selectedUser._id, Message: message? message:newMessage, incoming: false }])
+  function sendMessage(ev, message,file) {
+    if(ev){
+      ev.preventDefault();
+    }
+    if(!file){
+      setMessages(prev => [...prev, { Recipient: selectedUser._id, Message: message ? message : newMessage, incoming: false }])
+    }
     ws.send(JSON.stringify({
       Sender: loggeduserid,
       Recipient: selectedUser._id,
-      Message: message ? message : newMessage
+      Message: message ? message : newMessage,
+      File: file ? file : null
     }
     ))
     setNewMessage('')
   }
   function fetchMessages(userid) {
-    axios.get('/fetchMessages', { params: { loggedUserId: loggeduserid, selectedUserId: userid } }).then(messageData=>{
+    axios.get('/fetchMessages', { params: { loggedUserId: loggeduserid, selectedUserId: userid } }).then(messageData => {
       console.log(messageData.data.length)
-      if(messageData.data.length !== 0){
+      if (messageData.data.length !== 0) {
         setMessages(messageData.data)
       }
-      else{
+      else {
         setMessages([])
       }
     })
   }
-  function sendFirstHello(e){
-    sendMessage(e,"Hello👋");
+  function sendFirstHello(e) {
+    sendMessage(e, "Hello👋");
   }
-
+  function sendFile(ev){
+    console.log(ev.target.files)
+    const filereader = new FileReader()
+    filereader.readAsDataURL(ev.target.files[0])
+    filereader.onload = ()=>{
+      sendMessage(null,null,{name: ev.target.files[0].name,file:filereader.result});
+    }
+  }
   const navigate = useNavigate();
   if (isloading) {
     return <Loading />
@@ -180,7 +193,6 @@ function Chat() {
                     messages.map((message) =>
                     (<div className={"p-2 text-sm break-words w-fit max-w-[40%]" + (message.incoming || message.Sender == selectedUser._id ? ' bg-blue-700 text-white  rounded-md my-3' : ' bg-blue-400 text-white rounded-md my-3  self-end')}>
                       <p>{message.Message}</p>
-                      
                     </div>
                     ))
                     :
@@ -199,7 +211,13 @@ function Chat() {
                       onChange={ev => setNewMessage(ev.target.value)}
                       id='message_input'
                       required />
-                    <button className='bg-blue-500 px-3 text-white rounded-md'>
+                    <label type='button' className='bg-blue-500 p-2 cursor-pointer text-white rounded-sm '>
+                      <input type="file" name="File" id="" className='hidden' onChange={sendFile}/>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
+                      </svg>
+                    </label>
+                    <button className='bg-blue-500 px-3 text-white rounded-sm'>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                       </svg>
