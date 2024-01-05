@@ -12,7 +12,7 @@ import Loading from './Loading'
 function Chat() {
   const [email, setEmail] = useState('')
   const [foundUser, setFoundUser] = useState(null)
-  const { loggeduserid, loggedusername, isloading, loggedstatus } = useContext(UserContext)
+  const { loggeduserid, loggedusername, isloading , setLoggedUserName , setLOggedUserId} = useContext(UserContext)
   const [ws, setWs] = useState('')
   const [searchOrCancel, setSearchOrCancel] = useState(true)
   const [selectedUser, setSelectedUser] = useState(null)
@@ -61,18 +61,15 @@ function Chat() {
     setSearchOrCancel(true)
 
   }
-  function showmessages() {
-    messages.forEach((message) => {
-      return (
-        <div>
-          {message.Message}
-        </div>
-      )
-    })
-  }
   function handleFollow() {
     axios.get('/follow', { params: { id: foundUser._id } }).then((res) => {
       setNewContacts(prev => [...prev, res])
+    })
+  }
+  function logOut(){
+    axios.get("/logout").then(()=>{
+      setLoggedUserName(null)
+      setLOggedUserId(null)
     })
   }
   function sendMessage(ev, message, file) {
@@ -126,7 +123,15 @@ function Chat() {
       <>
         <div className='flex h-screen'>
           <div className={'w-1/3 h-full bg-gray-900 p-4 ' + (!selectedUser ? 'max-md:w-full' : 'max-md:hidden')}>
-            <h1 className='text-gray-100 font-bold text-'>HalfChat</h1>
+            <div className='flex justify-between'>
+              <h1 className='text-gray-100 font-bold text-'>HalfChat</h1>
+              <div className='text-white  p-2 cursor-pointer bg-gray-800 gap-2 rounded-md flex ' onClick={logOut}>
+                <h2>{loggedusername}</h2>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                </svg>
+              </div>
+            </div>
             <div className='mt-2 flex'>
               <form action="" onSubmit={getUser} onReset={resetSearch} className='flex w-full'>
                 <input value={email} onChange={e => { setEmail(e.target.value); setSearchOrCancel(true) }} type="text" className='flex-grow p-1 pl-3 rounded-l-lg bg-gray-950 search_input' placeholder='Search user by E-mail..' id='search' required />
@@ -195,11 +200,11 @@ function Chat() {
                     (<div className={"p-2 text-sm break-words w-fit max-w-[40%]" + (message.incoming || message.Sender == selectedUser._id ? ' bg-blue-700 text-white  rounded-md my-3' : ' bg-blue-400 text-white rounded-md my-3  self-end')}>
                       {message.File ?
                         <div className='flex items-center'>
-                          
+
                           <a href={axios.defaults.baseURL + "/uploads/" + message.File}>
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                          </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                            </svg>
                           </a>
                         </div>
                         :

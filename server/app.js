@@ -103,6 +103,9 @@ app.post('/user',(req,res)=>{
         res.status(200).json(false)
     })
 })
+app.get("/logout",(req,res)=>{
+    res.cookie('token','',{sameSite:'none',secure:true,httpOnly:false,maxAge:3600000}).status(201).json('loggedout')
+})
 app.get('/follow',verifyLogin, async(req,res)=>{
     let f_id=req.query.id;
     let userId=req.user.Id
