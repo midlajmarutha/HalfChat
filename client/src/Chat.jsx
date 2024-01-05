@@ -123,10 +123,10 @@ function Chat() {
       <>
         <div className='flex h-screen'>
           <div className={'w-1/3 h-full bg-gray-900 p-4 ' + (!selectedUser ? 'max-md:w-full' : 'max-md:hidden')}>
-            <div className='flex justify-between'>
-              <h1 className='text-gray-100 font-bold text-'>HalfChat</h1>
-              <div className='text-white  p-2 cursor-pointer bg-gray-800 gap-2 rounded-md flex ' onClick={logOut}>
-                <h2>{loggedusername}</h2>
+            <div className='flex justify-between items-center'>
+              <h1 className='text-gray-100 font-extrabold text-lg'>HalfChat</h1>
+              <h2 className='text-gray-100 font-bold first-letter:uppercase'>{loggedusername}</h2>
+              <div className='text-red-600  p-2 cursor-pointer bg-gray-800 gap-2 rounded-md flex ' onClick={logOut}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
                 </svg>

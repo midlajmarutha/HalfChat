@@ -32,10 +32,9 @@ function Contacts({selectedUser,setSelectedUser,online,fetchMessages}) {
                         return(
                         <div onClick={()=>{setSelectedUser(el);fetchMessages(el._id)}} className='mt-1'>
                         <div className={'flex text-gray-300 p-2 flex-grow rounded-md hover:bg-gray-800 transition-all cursor-pointer'+(!!selectedUser && el._id===selectedUser._id? ' bg-gray-950 border-blue-700 border-l-4' :'')}>
-                            <Avatar userId={el._id} userName={el.Username}/>
+                            <Avatar userId={el._id} userName={el.Username} isOnline={el.isOnline}/>
                             <div className="flex mx-2">
                                 <h2 className='first-letter:uppercase font-josefin '>{el.Username}</h2>
-                                {el.isOnline && <div className='h-2 w-2 bg-green-600 rounded-[50%] '></div>}
                             </div>
                         </div>
                         </div>
