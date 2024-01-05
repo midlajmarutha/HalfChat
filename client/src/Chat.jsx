@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import Loading from './Loading'
 
 
+
 function Chat() {
   const [email, setEmail] = useState('')
   const [foundUser, setFoundUser] = useState(null)
@@ -74,11 +75,11 @@ function Chat() {
       setNewContacts(prev => [...prev, res])
     })
   }
-  function sendMessage(ev, message,file) {
-    if(ev){
+  function sendMessage(ev, message, file) {
+    if (ev) {
       ev.preventDefault();
     }
-    if(!file){
+    if (!file) {
       setMessages(prev => [...prev, { Recipient: selectedUser._id, Message: message ? message : newMessage, incoming: false }])
     }
     ws.send(JSON.stringify({
@@ -104,12 +105,12 @@ function Chat() {
   function sendFirstHello(e) {
     sendMessage(e, "Hello👋");
   }
-  function sendFile(ev){
+  function sendFile(ev) {
     console.log(ev.target.files)
     const filereader = new FileReader()
     filereader.readAsDataURL(ev.target.files[0])
-    filereader.onload = ()=>{
-      sendMessage(null,null,{name: ev.target.files[0].name,file:filereader.result});
+    filereader.onload = () => {
+      sendMessage(null, null, { name: ev.target.files[0].name, file: filereader.result });
     }
   }
   const navigate = useNavigate();
@@ -192,9 +193,20 @@ function Chat() {
                   {messages.length !== 0 ?
                     messages.map((message) =>
                     (<div className={"p-2 text-sm break-words w-fit max-w-[40%]" + (message.incoming || message.Sender == selectedUser._id ? ' bg-blue-700 text-white  rounded-md my-3' : ' bg-blue-400 text-white rounded-md my-3  self-end')}>
-                      <p>{message.Message}</p>
-                    </div>
-                    ))
+                      {message.File ?
+                        <div className='flex items-center'>
+                          
+                          <a href={axios.defaults.baseURL + "/uploads/" + message.File}>
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                          </svg>
+                          </a>
+                        </div>
+                        :
+                        <p>{message.Message}</p>
+                      }
+                    </div>)
+                    )
                     :
                     <div className='flex flex-col justify-center items-center text-gray-500  cursor-pointer' onClick={sendFirstHello}>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ">
@@ -212,7 +224,7 @@ function Chat() {
                       id='message_input'
                       required />
                     <label type='button' className='bg-blue-500 p-2 cursor-pointer text-white rounded-sm '>
-                      <input type="file" name="File" id="" className='hidden' onChange={sendFile}/>
+                      <input type="file" name="File" id="" className='hidden' onChange={sendFile} />
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
                       </svg>

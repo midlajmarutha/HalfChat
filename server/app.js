@@ -11,6 +11,7 @@ const fs = require('fs')
 
 
 
+
 const app = express()
 
 function verifyLogin(req,res,next){
@@ -153,13 +154,14 @@ wss.on('connection',(connection,req)=>{
             let ext = name[name.length - 1]
             console.log(ext)
             let file = new Buffer(File.file,'base64')
-            let filePath = __dirname + "/storage/uploads/" + Sender + Date.now() + "." +ext;
+            let fileName = "HalfChat" + Date.now() + "." +ext;
+            let filePath = __dirname + "/storage/uploads/" + fileName;
             fs.writeFile(filePath, file, ()=>{
                 console.log("file saved")
             })
-            messageData.File = filePath;
+            messageData.File = fileName;
         }
-        if(Recipient && Message){
+        if(Recipient && (Message || File)){
             userHelpers.sendMessage(messageData).then((res)=>{
                 [...wss.clients].filter(c => c.Id===Recipient).forEach(c => c.send(JSON.stringify({Message,Sender,Id:res._id,incoming:true})))
             })
