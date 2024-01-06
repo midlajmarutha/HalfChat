@@ -13,6 +13,8 @@ function Chat() {
   const [email, setEmail] = useState('')
   const [foundUser, setFoundUser] = useState(null)
   const { loggeduserid, loggedusername, isloading , setLoggedUserName , setLOggedUserId} = useContext(UserContext)
+  const [files,setFiles] = useState([])
+  const [currentChunkIndex,setCurrentChunkIndex] = useState(null)
   const [ws, setWs] = useState('')
   const [searchOrCancel, setSearchOrCancel] = useState(true)
   const [selectedUser, setSelectedUser] = useState(null)
@@ -102,10 +104,21 @@ function Chat() {
   function sendFirstHello(e) {
     sendMessage(e, "Hello👋");
   }
+  const chunkSize = 1024 * 1024
   function sendFile(ev) {
-    console.log(ev.target.files)
+    console.log(ev.target.files[0])
+    let inputfiles = ev.target.files;
+    let totalChunks = Math.ceil(inputfiles[0].size / chunkSize)
+    let from = 0 * chunkSize;
+    let to = from + chunkSize;
+    let blob = inputfiles[0].slice(from,to)
+    console.log(totalChunks)
+    console.log(inputfiles[0].slice(from,to))
+
+    
+    
     const filereader = new FileReader()
-    filereader.readAsDataURL(ev.target.files[0])
+    filereader.readAsDataURL(blob)
     filereader.onload = () => {
       sendMessage(null, null, { name: ev.target.files[0].name, file: filereader.result });
     }

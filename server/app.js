@@ -159,7 +159,7 @@ wss.on('connection',(connection,req)=>{
             let file = new Buffer(File.file,'base64')
             let fileName = "HalfChat" + Date.now() + "." +ext;
             let filePath = __dirname + "/storage/uploads/" + fileName;
-            fs.writeFile(filePath, file, ()=>{
+            fs.appendFile(filePath, file, ()=>{
                 console.log("file saved")
             })
             messageData.File = fileName;
