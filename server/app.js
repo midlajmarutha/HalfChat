@@ -157,11 +157,16 @@ wss.on('connection',(connection,req)=>{
             let ext = name[name.length - 1]
             console.log(ext)
             let file = new Buffer(File.file,'base64')
+            let tempName = "temp_" + Sender+"."+ext;
+            let tempfilePath = __dirname + "/storage/uploads/" + tempName;
             let fileName = "HalfChat" + Date.now() + "." +ext;
             let filePath = __dirname + "/storage/uploads/" + fileName;
-            fs.appendFile(filePath, file, ()=>{
+            fs.appendFile(tempfilePath, file, ()=>{
                 console.log("file saved")
             })
+            if(File.isLast){
+                fs.rename(tempfilePath,filePath)
+            }
             messageData.File = fileName;
         }
         if(Recipient && (Message || File)){

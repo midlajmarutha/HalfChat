@@ -14,7 +14,7 @@ function Chat() {
   const [foundUser, setFoundUser] = useState(null)
   const { loggeduserid, loggedusername, isloading , setLoggedUserName , setLOggedUserId} = useContext(UserContext)
   const [files,setFiles] = useState([])
-  const [currentChunkIndex,setCurrentChunkIndex] = useState(null)
+  const [currentChunkIndex,setCurrentChunkIndex] = useState(0)
   const [ws, setWs] = useState('')
   const [searchOrCancel, setSearchOrCancel] = useState(true)
   const [selectedUser, setSelectedUser] = useState(null)
@@ -75,20 +75,23 @@ function Chat() {
     })
   }
   function sendMessage(ev, message, file) {
-    if (ev) {
-      ev.preventDefault();
-    }
-    if (!file) {
-      setMessages(prev => [...prev, { Recipient: selectedUser._id, Message: message ? message : newMessage, incoming: false }])
-    }
-    ws.send(JSON.stringify({
-      Sender: loggeduserid,
-      Recipient: selectedUser._id,
-      Message: message ? message : newMessage,
-      File: file ? file : null
-    }
-    ))
-    setNewMessage('')
+    return new Promise((resolve,reject)=>{
+      if (ev) {
+        ev.preventDefault();
+      }
+      if (!file) {
+        setMessages(prev => [...prev, { Recipient: selectedUser._id, Message: message ? message : newMessage, incoming: false }])
+      }
+      ws.send(JSON.stringify({
+        Sender: loggeduserid,
+        Recipient: selectedUser._id,
+        Message: message ? message : newMessage,
+        File: file ? file : null
+      }
+      ))
+      setNewMessage('')
+      resolve()
+    })
   }
   function fetchMessages(userid) {
     axios.get('/fetchMessages', { params: { loggedUserId: loggeduserid, selectedUserId: userid } }).then(messageData => {
@@ -106,21 +109,27 @@ function Chat() {
   }
   const chunkSize = 1024 * 1024
   function sendFile(ev) {
+    
     console.log(ev.target.files[0])
     let inputfiles = ev.target.files;
     let totalChunks = Math.ceil(inputfiles[0].size / chunkSize)
-    let from = 0 * chunkSize;
+    let from = currentChunkIndex * chunkSize;
     let to = from + chunkSize;
     let blob = inputfiles[0].slice(from,to)
     console.log(totalChunks)
+    setCurrentChunkIndex(2);
     console.log(inputfiles[0].slice(from,to))
-
-    
-    
     const filereader = new FileReader()
     filereader.readAsDataURL(blob)
     filereader.onload = () => {
-      sendMessage(null, null, { name: ev.target.files[0].name, file: filereader.result });
+      sendMessage(null, null, { name: ev.target.files[0].name, isLastChunk: currentChunkIndex === totalChunks, file: filereader.result }).then(()=>{
+        if(currentChunkIndex === totalChunks){
+          setCurrentChunkIndex(null)
+        }else{
+          // setCurrentChunkIndex(1)
+          console.log("sending " + currentChunkIndex)
+        }
+      })
     }
   }
   const navigate = useNavigate();
