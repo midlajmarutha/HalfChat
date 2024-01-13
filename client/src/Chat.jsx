@@ -12,9 +12,8 @@ import Loading from './Loading'
 function Chat() {
   const [email, setEmail] = useState('')
   const [foundUser, setFoundUser] = useState(null)
-  const { loggeduserid, loggedusername, isloading , setLoggedUserName , setLOggedUserId} = useContext(UserContext)
-  const [files,setFiles] = useState([])
-  const [currentChunkIndex,setCurrentChunkIndex] = useState(0)
+  const { loggeduserid, loggedusername, isloading, setLoggedUserName, setLOggedUserId } = useContext(UserContext)
+  const [files, setFiles] = useState([])
   const [ws, setWs] = useState('')
   const [searchOrCancel, setSearchOrCancel] = useState(true)
   const [selectedUser, setSelectedUser] = useState(null)
@@ -68,14 +67,14 @@ function Chat() {
       setNewContacts(prev => [...prev, res])
     })
   }
-  function logOut(){
-    axios.get("/logout").then(()=>{
+  function logOut() {
+    axios.get("/logout").then(() => {
       setLoggedUserName(null)
       setLOggedUserId(null)
     })
   }
   function sendMessage(ev, message, file) {
-    return new Promise((resolve,reject)=>{
+    return new Promise((resolve, reject) => {
       if (ev) {
         ev.preventDefault();
       }
@@ -107,27 +106,28 @@ function Chat() {
   function sendFirstHello(e) {
     sendMessage(e, "Hello👋");
   }
+
   const chunkSize = 1024 * 1024
+  let currentChunkIndex = 0;
+
   function sendFile(ev) {
-    
     console.log(ev.target.files[0])
     let inputfiles = ev.target.files;
     let totalChunks = Math.ceil(inputfiles[0].size / chunkSize)
     let from = currentChunkIndex * chunkSize;
     let to = from + chunkSize;
-    let blob = inputfiles[0].slice(from,to)
+    let blob = inputfiles[0].slice(from, to)
     console.log(totalChunks)
-    setCurrentChunkIndex(2);
-    console.log(inputfiles[0].slice(from,to))
+    console.log(inputfiles[0].slice(from, to))
     const filereader = new FileReader()
     filereader.readAsDataURL(blob)
     filereader.onload = () => {
-      sendMessage(null, null, { name: ev.target.files[0].name, isLastChunk: currentChunkIndex === totalChunks, file: filereader.result }).then(()=>{
-        if(currentChunkIndex === totalChunks){
-          setCurrentChunkIndex(null)
-        }else{
-          // setCurrentChunkIndex(1)
-          console.log("sending " + currentChunkIndex)
+      sendMessage(null, null, { name: ev.target.files[0].name, type: ev.target.files[0].type, isLastChunk: currentChunkIndex + 1 === totalChunks, file: filereader.result }).then(() => {
+        if (currentChunkIndex + 1 === totalChunks) {
+          currentChunkIndex = 0;
+        } else {
+          currentChunkIndex++;
+          sendFile(ev)
         }
       })
     }
@@ -221,13 +221,19 @@ function Chat() {
                     messages.map((message) =>
                     (<div className={"p-2 text-sm break-words w-fit max-w-[40%]" + (message.incoming || message.Sender == selectedUser._id ? ' bg-blue-700 text-white  rounded-md my-3' : ' bg-blue-400 text-white rounded-md my-3  self-end')}>
                       {message.File ?
+                      <div>
+                        <div>
+                          
+                        </div>
                         <div className='flex items-center'>
+                          {/* {message.File.file_type.includes("image/") && <img src={axios.defaults.baseURL + "/uploads/" + message.File.file_name} width={50}></img>} */}
 
-                          <a href={axios.defaults.baseURL + "/uploads/" + message.File}>
+                          <a href={axios.defaults.baseURL + "/uploads/" + message.File.file_name}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
                             </svg>
                           </a>
+                        </div>
                         </div>
                         :
                         <p>{message.Message}</p>

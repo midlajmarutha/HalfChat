@@ -164,10 +164,16 @@ wss.on('connection',(connection,req)=>{
             fs.appendFile(tempfilePath, file, ()=>{
                 console.log("file saved")
             })
-            if(File.isLast){
-                fs.rename(tempfilePath,filePath)
+            if(File.isLastChunk){
+                console.log('renaming..')
+                fs.rename(tempfilePath,filePath,()=>{
+                    console.log("renamed")
+                })
             }
-            messageData.File = fileName;
+            messageData.File = {
+                file_name:fileName,
+                file_type:File.type
+            };
         }
         if(Recipient && (Message || File)){
             userHelpers.sendMessage(messageData).then((res)=>{
