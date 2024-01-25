@@ -18,11 +18,13 @@ function verifyLogin(req,res,next){
     let {token}=req.cookies
     if(token){
         jwt.verify(token,process.env.JWT_SECRET_KEY,{},(err,userData)=>{
+            if(userData){
+                console.log(userData);
             if(userData.Id){
                 req.user=userData
                 req.user.logstatus = true;
                 next()
-            }
+            }}
         })
     }
     else{
