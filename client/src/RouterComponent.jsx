@@ -12,7 +12,7 @@ import Settings from './Settings'
 
 
 export default function RouterComponent() {
-    axios.defaults.baseURL="http://localhost:3000"
+    axios.defaults.baseURL="http://localhost:3000"||"https://halfchat.onrender.com/"
     axios.defaults.withCredentials=true;
     axios.defaults.headers={
       'Content-Type': 'application/json'
