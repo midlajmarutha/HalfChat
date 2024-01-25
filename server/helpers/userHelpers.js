@@ -110,7 +110,7 @@ module.exports={
             resolve(UserData)
         })
     },
-    sendMessage:(data)=>{
+    storeMessage:(data)=>{
         // store messages into database
         return new Promise((resolve,reject)=>{
             messageModel.create(data).then((res)=>{

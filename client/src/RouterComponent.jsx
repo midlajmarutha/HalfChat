@@ -8,6 +8,7 @@ import Login from './Login'
 import Chat from './Chat'
 import { UserContext } from './UserContext'
 import Edit from './Edit'
+import Settings from './Settings'
 
 
 export default function RouterComponent() {
@@ -22,6 +23,7 @@ export default function RouterComponent() {
       <Router>
         <Routes>
           <Route Component={Chat} path='/'/>
+          <Route Component={Settings} path='/settings'/>
           <Route Component={Register} path='/register'/>
           <Route Component={Login} path='/login'/>
           <Route Component={Edit} path='/edit'/>

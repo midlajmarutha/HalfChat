@@ -48,6 +48,9 @@ app.use(function(req, res, next) {
 });
 
 app.use('/uploads',express.static(__dirname+"/storage/uploads"))
+app.get('/',(req,res)=>{
+    res.sendFile(__dirname+"/views/error.html")
+})
 app.post('/login',(req,res)=>{
     console.log(req.body)
     userHelpers.doLogin(req.body).then((response)=>{
@@ -176,7 +179,7 @@ wss.on('connection',(connection,req)=>{
             };
         }
         if(Recipient && (Message || File)){
-            userHelpers.sendMessage(messageData).then((res)=>{
+            userHelpers.storeMessage(messageData).then((res)=>{
                 [...wss.clients].filter(c => c.Id===Recipient).forEach(c => c.send(JSON.stringify({Message,Sender,Id:res._id,incoming:true})))
             })
         }

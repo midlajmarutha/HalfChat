@@ -6,10 +6,21 @@ input:focus{
 .search_input{
     color: rgb(182, 186, 214);
 }
-.contacts_container::-webkit-scrollbar-track{
-    display: none;
+
+
+::-webkit-scrollbar{
+    width: 2px;
+    transition: all 10ms;
 }
 
-*::-webkit-scrollbar{
-    display: none;
+::-webkit-scrollbar-thumb:hover  ::-webkit-scrollbar{
+    width: 10px;
+} 
+::-webkit-scrollbar-track{
+
+}
+::-webkit-scrollbar-thumb{
+    background: rgb(75, 75, 75);
+    cursor: pointer;
+    border-radius: 10px;
 }

@@ -26,11 +26,11 @@ function Contacts({selectedUser,setSelectedUser,online,fetchMessages}) {
   return (
       <div className='flex flex-col overflow-y-scroll flex-grow h-full contacts_container'>
                 {contacts?
-                <div className='' >
+                <div className=''>
                     {contacts.map((el)=>{
                         filterOnlineContacts(el)
                         return(
-                        <div onClick={()=>{setSelectedUser(el);fetchMessages(el._id)}} className='mt-1'>
+                        <div onClick={()=>{setSelectedUser(el);fetchMessages(el._id)}} className='mt-1' id={el._id} title={"Chat with "+ el.Username} onMouseDown={e=>{if(e.button === 2){console.log("Right Click")}}}>
                         <div className={'flex text-gray-300 p-2 flex-grow rounded-md hover:bg-gray-800 transition-all cursor-pointer'+(!!selectedUser && el._id===selectedUser._id? ' bg-gray-950 border-blue-700 border-l-4' :'')}>
                             <Avatar userId={el._id} userName={el.Username} isOnline={el.isOnline}/>
                             <div className="flex mx-2">
