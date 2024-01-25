@@ -24,6 +24,10 @@ function verifyLogin(req,res,next){
                 req.user.logstatus = true;
                 next()
             }
+            else{
+                req.user = {logstatus:false};
+                next();
+            }
         })
     }
     else{
