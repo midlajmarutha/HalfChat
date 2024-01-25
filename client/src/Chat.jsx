@@ -23,7 +23,7 @@ function Chat() {
   const [newContacts, setNewContacts] = useState([])
   const [onlinePeople, setOnlinePeople] = useState([])
   useEffect(() => {
-    const websocket = new WebSocket("ws://halfchat.onrender.com/");
+    const websocket = new WebSocket("wss://halfchat.onrender.com/");
     setWs(websocket)
     websocket.addEventListener('message', handleMessage)
   }, [])
