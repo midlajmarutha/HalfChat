@@ -19,7 +19,7 @@ function verifyLogin(req,res,next){
     if(token){
         jwt.verify(token,process.env.JWT_SECRET_KEY,{},(err,userData)=>{
                 console.log(userData);
-            if(userData.Id){
+            if(userData){
                 req.user=userData
                 req.user.logstatus = true;
                 next()
