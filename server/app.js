@@ -139,8 +139,11 @@ wss.on('connection',(connection,req)=>{
     let cookies = req.headers.cookie;
     if (cookies){
         let cookieString=cookies.split(';').find(str => str.startsWith('token'))
+        console.log(cookieString)
+        console.log(process.env.JWT_SECRET_KEY)
         if(cookieString){
             let token = cookieString.split('=')[1]
+            console.log(token)
             if(token){
                 jwt.verify(token,process.env.JWT_SECRET_KEY,{},(err,userData)=>{
                     if(err) {console.log(err)}
