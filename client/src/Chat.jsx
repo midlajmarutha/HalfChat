@@ -3,9 +3,9 @@ import { UserContext } from './UserContext'
 import Login from './Login'
 import axios from 'axios'
 import '../src/App.css'
-import Contacts from './components/Contacts'
+import Contacts from './Contacts'
 import { useNavigate } from 'react-router-dom'
-import Loading from './components/Loading'
+import Loading from './Loading'
 
 
 function Chat() {
