@@ -143,10 +143,11 @@ wss.on('connection',(connection,req)=>{
             let token = cookieString.split('=')[1]
             if(token){
                 jwt.verify(token,process.env.JWT_SECRET_KEY,{},(err,userData)=>{
-                    if(err) throw err
+                    if(err) {console.log(err)}
+                    else{
                     const {User,Id}=userData;
                     connection.Username=User;
-                    connection.Id=Id
+                    connection.Id=Id}
                 })
             }
         }
