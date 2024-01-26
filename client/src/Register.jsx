@@ -1,6 +1,6 @@
 import { useContext, useState} from "react"
 import axios from 'axios'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {UserContext} from './UserContext'
 
 
@@ -8,7 +8,7 @@ export default function Register(){
     const [Username, setUsername]=useState('');
     const [Password, setPassword]=useState('');
     const [Email, setEmail]=useState('');
-    const {setLoggedUserId,setLoggedUserName}=useContext(UserContext)
+    const {setLoggedUserId,setLoggedUserName,loggeduserid}=useContext(UserContext)
     async function register (e){
         e.preventDefault();
         const res = await axios.post('/register',{Email,Username,Password})
