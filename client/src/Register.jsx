@@ -16,6 +16,12 @@ export default function Register(){
         setLoggedUserName(res.data.Username)
         
     }
+    const navigate = useNavigate()
+    useEffect(()=>{
+        if(loggeduserid){
+            navigate("/");
+        }
+    })
     return(
         <div className="bg-gray-900 h-screen flex items-center">
             <form className="w-64 mx-auto mb-8" onSubmit={register}>
